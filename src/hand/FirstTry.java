@@ -22,14 +22,13 @@ public class FirstTry extends PApplet {
 	  // Spiegeln
 	  context.setMirror(true);
 	  
-	  // add focus gestures 
-	  // context.addGesture("Wave");
-	  // context.addGesture("Click");
-	  // context.addGesture("RaiseHand");  
+	  // Gesten
+	  context.addGesture("Wave");
+	  context.addGesture("Click");
+	  context.addGesture("RaiseHand");  
 	  
 	  //Enable Scene
-	  context.enableScene(640,480,60);  
-	  //context.enableScene(700,720,60);
+	  context.enableScene(640,480,60);	  
 	  
 	  stroke(255);
 	  strokeWeight(12);

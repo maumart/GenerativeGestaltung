@@ -1,19 +1,30 @@
-package hand;
+package passKinectAround;
 
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 
 public class Kinect {
-	private SimpleOpenNI context;
-	public String test;
+	public SimpleOpenNI context;
+	public boolean initialized;
 	
 	public Kinect(PApplet p) {
 		this.context = new SimpleOpenNI(p,SimpleOpenNI.RUN_MODE_MULTI_THREADED);	
 		this.settings();
+		this.initialized=false;
 	}
 	
-	public SimpleOpenNI getKinect(){		
-		return context;
+	public SimpleOpenNI getKinect(){
+		if (context.init()) {
+			return context;
+		}
+		else return null;
+	}
+	
+	public boolean checkAvailability(){
+		if (context.init()) {
+			this.initialized=true;
+		}
+		return initialized;		
 	}
 	
 	private void settings(){ 

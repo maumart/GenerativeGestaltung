@@ -3,7 +3,6 @@ package kinectPlayground;
 import java.util.ArrayList;
 
 import processing.core.PApplet;
-import processing.core.PImage;
 import processing.core.PVector;
 //import processing.opengl.*;
 
@@ -20,14 +19,13 @@ public class AppletMain extends PApplet {
 	ArrayList<PVector> joints= new ArrayList<PVector>();
 	ArrayList<User> users= new ArrayList<User>();
 	
-	public float scaleFactor=1.5f;
 	int max=640*480;
 	int[] userPixels = new int[max];
 
 	public void setup(){		
 		k = new Kinect(this);
 		kinect = k.getKinect();
-		stage = new Stage(kinect, k, this);
+		stage = new Stage(kinect, k, this);	
 
 		//Processing Stuff
 		this.size(1440, 720);
@@ -41,6 +39,7 @@ public class AppletMain extends PApplet {
 
 	public void draw(){
 		//initialized = k.checkAvailability();
+		//this.translate(0,0);
 		
 		this.background(0);
 		
@@ -54,26 +53,40 @@ public class AppletMain extends PApplet {
 		stage.createScene();
 		
 		//Geht im aktuell Treiber nicht 
-		//kinect.moveKinect(50);	
+		//kinect.moveKinect(50);		
 		
 		// Userskelett zeichnen
 		//if (users.size() > 0) {
 		for (User user: users) {			
 			if(kinect.isTrackingSkeleton(user.userId)) {
 				user.updateLimbs();
-				user.drawSkeleton();					
-			}
+				//user.drawSkeleton();			
+				
+				checkBB(user);
+				
+			}			
 		
 		}			
-		//}		
+		//}	
 		
-	}	
+		
+	}
 	
-	private BoundingBox drawBoundingBox(){
-		BoundingBox bBox = new BoundingBox(50*scaleFactor, 50*scaleFactor, 50*scaleFactor, 50*scaleFactor);
-		rect(bBox.x,bBox.y,bBox.width,bBox.height);	
-		return bBox;		
-	}	
+	public void checkBB(User user){
+		ArrayList<BoundingBox> bBox=stage.bBox;
+		
+		for (BoundingBox box: bBox) {
+			if (box.checkPoint(user.getLeftHand())
+					 || box.checkPoint(user.getRightHand())) {						
+				
+				System.out.println(user.getRightHand());
+				box.color=255;					
+			}
+			else box.color=123;
+			
+		}		
+		
+	}
 	
 	// Callbacks Simpleopenni
 

@@ -9,6 +9,8 @@ public class User {
 	int userId;
 	float scaleFactor=1.5f;
 	PApplet p;
+	public PVector leftHand;
+	public PVector rightHand;
 	
 	public User(PApplet p, SimpleOpenNI kinect, int userId){
 		this.kinect=kinect;
@@ -16,40 +18,56 @@ public class User {
 		this.p= p;	
 	}
 	
-	public void updateLimbs(){
-		PVector rightHand = new PVector();
-		PVector rightHand2 =  new PVector();
-		PVector leftHand = new PVector();
-		PVector leftHand2 =  new PVector();
+	public PVector getLeftHand(){		
+		return leftHand;
+	}
+	
+	public PVector getRightHand(){		
+		return rightHand;
+	}
+	
+	public void updateLimbs(){		
+		PVector rightHandReal = new PVector();
+		PVector rightHandProjected =  new PVector();
+		
+		PVector leftHandReal = new PVector();
+		PVector leftHandProjected =  new PVector();
+		
+		PVector leftHandProjectedUnscalled = new PVector();
+		PVector rightHandProjectedUnscalled =  new PVector();
 		
 		//Handposition auslesen 
-		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_HAND,rightHand);
-		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND,leftHand);
+		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_HAND,rightHandReal);
+		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND,leftHandReal);
 
 		// Pos Konvertieren
-		kinect.convertRealWorldToProjective(rightHand, rightHand2); 
-		kinect.convertRealWorldToProjective(leftHand, leftHand2);
+		kinect.convertRealWorldToProjective(rightHandReal, rightHandProjected);
+		kinect.convertRealWorldToProjective(rightHandReal, rightHandProjectedUnscalled);
 		
-		//Vergroesserung der Vektoren
-		rightHand2.mult(scaleFactor);
-		leftHand2.mult(scaleFactor);	
-
+		kinect.convertRealWorldToProjective(leftHandReal, leftHandProjected);
+		kinect.convertRealWorldToProjective(leftHandReal, leftHandProjected);
+		kinect.convertRealWorldToProjective(leftHandReal, leftHandProjectedUnscalled);
+		
+		//Vergroesserung der Vektoren		
+		rightHandProjected.mult(scaleFactor);
+		leftHandProjected.mult(scaleFactor);		
+		
 		p.color(123,123,123);
 		p.fill(0,255);	
 
-			// SKalierungsfaktor fuer 3D
-			//int sfaktorr=(int) (map(rightHand2.z,0,4000,150,10));
-			//int sfaktorl=(int) (map(leftHand2.z,0,4000,150,10));	
+		// SKalierungsfaktor fuer 3D
+		float sfaktorr= (p.map(rightHandProjected.z,300,3000,7,1));			
 
 		// Handboxen zeichnen x y z
-		float rectSize=50*scaleFactor;		
-		p.rect(leftHand2.x-rectSize/2,leftHand2.y-rectSize/2,rectSize,rectSize);
-		p.rect(rightHand2.x-rectSize/2,rightHand2.y-rectSize/2,rectSize,rectSize);		
+		float rectSize=50*sfaktorr;		
+		p.rect(leftHandProjected.x-rectSize/2,leftHandProjected.y-rectSize/2,rectSize,rectSize);
+		p.rect(rightHandProjected.x-rectSize/2,rightHandProjected.y-rectSize/2,rectSize,rectSize);		
 		
-		//System.out.println(rightHand2);
+		this.rightHand=rightHandProjectedUnscalled;
+		this.leftHand=leftHandProjectedUnscalled;
 		
 	}
-	
+	/*
 	public void drawSkeleton() {
 		//Koerperteilevektoren
 		PVector head = new PVector();
@@ -61,15 +79,7 @@ public class User {
 		PVector handLeft = new PVector();
 		PVector handRight = new PVector();
 		PVector torso = new PVector();
-		PVector hipLeft = new PVector();
-		PVector hipRight = new PVector();
-		PVector kneeLeft = new PVector();
-		PVector kneeRight = new PVector();
-		PVector footRight = new PVector();
-		PVector footLeft = new PVector();
-		
-		
-		
+				
 		// Vektoren fuellen
 		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_HEAD,head);
 		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_NECK,neck);
@@ -83,10 +93,7 @@ public class User {
 		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_HAND,handRight);
 		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND,handLeft);
 		
-		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_TORSO,torso);
-		
-		//System.out.println(handLeft);
-		
+		kinect.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_TORSO,torso);	
 		
 		//Konvertieren in Buehne
 		kinect.convertRealWorldToProjective(head, head);
@@ -124,4 +131,5 @@ public class User {
 		//System.out.println(handLeft);
 
 	}
+	*/
 }

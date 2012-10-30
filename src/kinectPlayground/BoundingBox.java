@@ -7,14 +7,24 @@ public class BoundingBox {
 	public float y;
 	public float width;
 	public float height;
-	public int color;
+	public int color=123;	
+	public int hover=255;
 	
 	public BoundingBox(float x, float y, float width, float height) {
 		this.x=x;
 		this.y=y;
 		this.width=width;
-		this.height=height;
+		this.height=height;		
+	}
+	
+	public void hoverColor(){
 		
+	}
+
+	
+	public String toString(){		
+		String s = Float.toString(x)+","+Float.toString(y)+","+Float.toString(width)+","+Float.toString(height);		
+		return s;
 	}
 	
 	public boolean checkPoint(PVector pv){

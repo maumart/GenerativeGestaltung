@@ -56,10 +56,10 @@ public class User {
 		p.fill(0,255);	
 
 		// SKalierungsfaktor fuer 3D
-		float sfaktorr= (p.map(rightHandProjected.z,300,3000,7,1));			
+		//float sfaktorr= (p.map(rightHandProjected.z,300,3000,7,1));			
 
 		// Handboxen zeichnen x y z
-		float rectSize=50*sfaktorr;		
+		float rectSize=50*scaleFactor;		
 		p.rect(leftHandProjected.x-rectSize/2,leftHandProjected.y-rectSize/2,rectSize,rectSize);
 		p.rect(rightHandProjected.x-rectSize/2,rightHandProjected.y-rectSize/2,rectSize,rectSize);		
 		

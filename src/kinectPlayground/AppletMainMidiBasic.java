@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import themidibus.MidiBus;
 //import processing.opengl.*;
 
 import SimpleOpenNI.SimpleOpenNI;
 
-public class AppletMain extends PApplet {
+public class AppletMainMidiBasic extends PApplet {
 	private static final long serialVersionUID = 1L;
 
 	SimpleOpenNI kinect;
@@ -20,8 +21,11 @@ public class AppletMain extends PApplet {
 	ArrayList<User> users= new ArrayList<User>();
 	
 	int max=640*480;
-	int[] userPixels = new int[max];	
+	int[] userPixels = new int[max];
 	
+	// Midi
+	public MidiBus myBus;	
+	// Midi
 
 	public void setup(){		
 		k = new Kinect(this);
@@ -35,10 +39,18 @@ public class AppletMain extends PApplet {
 		this.strokeWeight(5);
 		this.noFill();  
 		this.smooth();
-		this.frameRate(60);		
+		this.frameRate(60);	
+		
+		
+		// Midi
+		MidiBus.list();		
+		myBus = new MidiBus(this, "Real Time Sequencer", "Microsoft MIDI Mapper");
+		
 	}	
-
-	public void draw(){
+	
+ 
+	public void draw(){		
+		
 		//initialized = k.checkAvailability();
 		//this.translate(0,0);
 		
@@ -61,29 +73,97 @@ public class AppletMain extends PApplet {
 		for (User user: users) {			
 			if(kinect.isTrackingSkeleton(user.userId)) {
 				user.updateLimbs();
-				//user.drawSkeleton();			
-				
+				//user.drawSkeleton();				
 				checkBB(user);
 				
 			}			
 		
 		}			
-		//}	
+		//}			
 		
 		
 	}
 	
+	void noteOn(int channel, int pitch, int velocity) {
+		// Receive a noteOn
+		println();
+		println("Note On:");
+		println("--------");
+		println("Channel:"+channel);
+		println("Pitch:"+pitch);
+		println("Velocity:"+velocity);
+	}
+
+	void noteOff(int channel, int pitch, int velocity) {
+		// Receive a noteOff
+		println();
+		println("Note Off:");
+		println("--------");
+		println("Channel:"+channel);
+		println("Pitch:"+pitch);
+		println("Velocity:"+velocity);
+	}
+
+	void controllerChange(int channel, int number, int value) {
+		// Receive a controllerChange
+		println();
+		println("Controller Change:");
+		println("--------");
+		println("Channel:"+channel);
+		println("Number:"+number);
+		println("Value:"+value);
+	}
+
+	
 	public void checkBB(User user){
 		ArrayList<BoundingBox> bBox=stage.bBox;
 		
+		// Midi
+		int channel = 0;
+		int pitch = 64;
+		int velocity = 127;
+		
+		//BB durchlaufen
 		for (BoundingBox box: bBox) {
+			
+			//Linke Hand
+			if (box.checkPoint(user.getLeftHand())){
+				int pitchLeft=box.checkYPos(user.getLeftHand());
+				myBus.sendNoteOn(channel, pitchLeft, velocity); // Send a Midi noteOn
+				delay(100);
+			}
+			
+			//Rechte Hand
+			if (box.checkPoint(user.getRightHand())){
+				int pitchRight=box.checkYPos(user.getRightHand());
+				myBus.sendNoteOn(channel, pitchRight, velocity); // Send a Midi noteOn
+				delay(100);				
+			}
+			
+			//Beide			
 			if (box.checkPoint(user.getLeftHand())
 					 || box.checkPoint(user.getRightHand())) {						
 				
-				System.out.println(user.getRightHand());
-				box.color=255;					
+				//Hover Box
+				box.color=box.hoverColor;				
+				
+				/*
+				int value=box.checkYPos(user.getLeftHand());
+				System.out.println(value);
+				//myBus.sendNoteOn(channel, (int) Math.round(Math.random()*100), velocity); // Send a Midi noteOn
+				myBus.sendNoteOn(channel, value, velocity); // Send a Midi noteOn
+				delay(100);
+				
+				//int i = map(value, istart, istop, ostart, ostop)
+				 * 
+				 * */
+				 
+				
 			}
-			else box.color=123;
+			else box.color=box.normColor;
+			
+			myBus.sendNoteOff(channel, pitch, velocity); // Send a Midi nodeOff
+			//delay(100);
 			
 		}		
 		

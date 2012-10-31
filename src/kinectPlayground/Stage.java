@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import SimpleOpenNI.SimpleOpenNI;
 import processing.core.PApplet;
 import processing.core.PImage;
-import sun.org.mozilla.javascript.internal.Evaluator;
 
 public class Stage {
 	PImage scene;
@@ -41,10 +40,10 @@ public class Stage {
 	}
 	
 	public void createBoundingBox(){		
-		BoundingBox box1 = new BoundingBox(0,0,150,320);
-		BoundingBox box2 = new BoundingBox(160,0,150,320);
-		BoundingBox box3 = new BoundingBox(320,0,150,320);
-		BoundingBox box4 = new BoundingBox(480,0,150,320);
+		BoundingBox box1 = new BoundingBox(0,0,150,300,300);
+		BoundingBox box2 = new BoundingBox(160,0,150,300,500);
+		BoundingBox box3 = new BoundingBox(320,0,150,300,700);
+		BoundingBox box4 = new BoundingBox(480,0,150,300,900);
 		
 		bBox.add(box1);
 		bBox.add(box2);

@@ -18,5 +18,7 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="GenerativeGestaltung/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="themidibus.jar"/>
+	<classpathentry kind="lib" path="controlP5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
